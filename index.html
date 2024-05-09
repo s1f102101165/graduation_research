@@ -7,9 +7,55 @@
 <script type='text/javascript' src='https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js'></script>
 </head>
 <body>
-<a-scene vr-mode-ui='enabled: false' arjs='sourceType: webcam; videoTexture: true; debugUIEnabled: false' renderer='antialias: true; alpha: true'>
-    <a-camera gps-new-camera='gpsMinDistance: 5'></a-camera>
-    <a-entity material='color: red' geometry='primitive: box' gps-new-entity-place="latitude: <add-your-latitude>; longitude: <add-your-longitude>" scale="10 10 10"></a-entity>
+
+
+
+
+
+    <a-scene
+      vr-mode-ui="enabled: false"
+      embedded
+      arjs="sourceType: webcam; debugUIEnabled: false;"
+    >
+    
+    <a-camera gps-camera rotation-reader></a-camera>
+    <a-box
+    material="color: red"
+    gps-entity-place="latitude: 0.0; longitude: 0.0;"
+    scale="30 30 30"
+  ></a-box>
 </a-scene>
+
+
+
+<script>
+    function success(pos){
+    const lat = pos.coords.latitude;   //緯度を取得して定数latに代入
+    const lng = pos.coords.longitude;  //経度を取得して定数lngに代入
+    const accuracy = pos.coords.accuracy;  //同じく精度を定数accuracyに代入
+    alert("経度:" + lat + "\n緯度:" + lng + "\n精度 半径:" + accuracy + "m")
+
+    //var obj = document.getElementById("entity");
+    //var obj = document.getElementsByTagName(["a-scene"])[0];
+    //obj.setAttribute(['gps-new-entity-place'], "latitude: 3.0; longitude: 3.0")
+    //obj.setAttribute('gps-new-entity-place', {latitude: 3.0, longitude: 3.0})
+    //obj.setAttribute('class', "latitude: 3.0; longitude: 3.0")
+    //obj["gps-new-entity-place"] = "latitude: 3.0; longitude: 3.0"
+
+    var el = document.querySelector('[gps-entity-place]')
+    el.setAttribute('gps-entity-place', 'latitude: ' + lat + '; longitude: ' + lng + ';')
+    //el.setAttribute("longitude", 3.0)
+    el.setAttribute('material','color: yellow');
+    }
+
+    function fail(error){
+    window.alert('位置情報の取得に失敗しました。エラーコード：' + error.code)
+    }
+
+    navigator.geolocation.getCurrentPosition(success,fail);
+</script>
+
+
+
 </body>
 </html>
